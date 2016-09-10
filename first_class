@@ -1,0 +1,59 @@
+Option Explicit
+'meant to make all variables explicit through compilation
+Const MIN_AGE = 23
+
+
+
+Sub main()
+
+    MsgBox "Hello World!", vbQuestion, "First Macro"
+
+
+End Sub
+
+' The user should enter his age
+
+Sub ageVerification()           'this is the signature
+Dim age As Integer              'here are the variables declared
+Dim message As String
+
+    age = InputBox("Please enter your age", "Age Verification")
+    
+    If age >= MIN_AGE Then
+            message = "You are good to go"
+        Else
+            message = "Uhm, maybe too young, Buddy"
+    End If
+    
+    
+    'Debug.Print "Age :"; age
+    
+    MsgBox message, , "Age Verification"
+
+
+End Sub
+
+Sub subsidiary()
+Dim subsidiary As String
+Dim landmark As String
+
+    subsidiary = "Vienna"
+    
+    
+    Select Case when    subsidiary = "Graz"         Then    landmark = "Uhrturm"
+                when    subsidiary = "Innsbruck"    Then   landmark = "Goldenes Dachl"
+            
+            ElseIf subsidiary = "Vienna" Then
+            landmark = "Zentralfriedhof"
+            
+    Else
+        landmark = "...really ?"
+
+    End If
+    
+    
+    MsgBox "The Landmark of " & subsidiary & " is " _
+    & landmark & "."
+    
+    
+End Sub
