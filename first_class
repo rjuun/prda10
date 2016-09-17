@@ -4,13 +4,6 @@ Const MIN_AGE = 23
 
 
 
-Sub main()
-
-    MsgBox "Hello World!", vbQuestion, "First Macro"
-
-
-End Sub
-
 ' The user should enter his age
 
 Sub ageVerification()           'this is the signature
@@ -19,11 +12,13 @@ Dim message As String
 
     age = InputBox("Please enter your age", "Age Verification")
     
-    If age >= MIN_AGE Then
-            message = "You are good to go"
-        Else
-            message = "Uhm, maybe too young, Buddy"
-    End If
+Select Case age
+     Case Is >= MIN_AGE
+         message = "You are good to go"
+     Case Is < MIN_AGE
+         message = "Uhm, not yet Buddy"
+     
+End Select
     
     
     'Debug.Print "Age :"; age
@@ -37,23 +32,274 @@ Sub subsidiary()
 Dim subsidiary As String
 Dim landmark As String
 
-    subsidiary = "Vienna"
+    
+    subsidiary = "graz"
     
     
-    Select Case when    subsidiary = "Graz"         Then    landmark = "Uhrturm"
-                when    subsidiary = "Innsbruck"    Then   landmark = "Goldenes Dachl"
-            
-            ElseIf subsidiary = "Vienna" Then
+    Select Case subsidiary
+        Case "Graz", "graz"
+            landmark = "Uhrturm"
+        Case "Innsbruck"
+            landmark = "Goldenes Dachl"
+        Case "Vienna"
             landmark = "Zentralfriedhof"
-            
-    Else
-        landmark = "...really ?"
+        Case Else
+            landmark = "...really ?"
 
-    End If
+    End Select
     
     
     MsgBox "The Landmark of " & subsidiary & " is " _
     & landmark & "."
     
+    
+End Sub
+
+ Sub caseTest()
+Dim value As Integer
+    
+    value = 12
+    
+    Select Case value
+        Case Is < 5
+            Debug.Print "value is less than 5"
+        Case 6, 7, 8
+            Debug.Print "value is between 6 and 8"
+        Case 9 To 12
+            Debug.Print "value is between 9 and 12"
+        Case Else
+            Debug.Print "value is not between 1 and 12"
+    
+    
+    End Select
+    
+ End Sub
+
+Sub countUp()
+
+Dim n As Integer
+Dim m As Integer
+Dim startValue As Integer
+Dim endValue As Integer
+
+    startValue = 10
+    endValue = 12
+    
+
+    For m = startValue To endValue
+        For n = 1 To 10
+            Debug.Print m, n
+        Next
+        
+        Debug.Print "first loop"
+    Next
+        Debug.Print "end of loop"
+
+
+End Sub
+Sub countSteps()
+
+Dim n As Integer
+Dim m As Integer
+    
+        For n = 10 To 1 Step -1         'use the Step to make it jump every 2, 3, and also countdown
+            Debug.Print n
+          
+            If n = 3 Then Exit For      'to exit the loop
+                    Debug.Print "ops"
+                
+        Next
+        
+    
+    
+    
+        
+End Sub
+
+Sub doUntilLoop()
+
+Dim value As Integer
+
+    value = 1
+    
+    'make a loop from 1 to 10
+    Do Until value > 10
+        DoEvents            ' used to check events from user (f8, f9) and hands over instruction to system
+                            ' so the macro can be stopped
+        Debug.Print value
+        
+
+        value = value + 4
+    Loop
+    
+
+
+End Sub
+Sub doWhileLoop()
+
+Dim value As Integer
+
+    value = 1
+    
+    'make a loop from 1 to 10
+    Do While value < 10
+        DoEvents            ' used to check events from user (f8, f9) and hands over instruction to system
+                            ' so the macro can be stopped
+        Debug.Print value
+        
+
+        value = value + 4
+    Loop
+    
+
+
+End Sub
+
+Sub doLoopUntil()
+
+Dim value As Integer
+
+    value = 1
+    
+    'make a loop from 1 to 10
+    
+    
+    Do
+        DoEvents            ' used to check events from user (f8, f9) and hands over instruction to system
+                            ' so the macro can be stopped
+        Debug.Print value
+        
+
+        value = value + 4
+    Loop Until value < 10      'the only difference is to have the condition verified at the end
+    
+
+End Sub
+
+Sub doLoopWhile()
+
+Dim value As Integer
+
+    value = 1
+    
+    'make a loop from 1 to 10
+    
+    
+    Do
+        DoEvents            ' used to check events from user (f8, f9) and hands over instruction to system
+                            ' so the macro can be stopped
+        Debug.Print value
+        
+        If value = 5 Then
+            Debug.Print "stop it !!!"   'this is what I wanted... to be able to post the reason of the error
+                                        'when the condition is actually met
+            Exit Do
+        End If
+        
+
+        value = value + 4
+    Loop While value < 10      'the only difference is to have the condition verified at the end
+    
+End Sub
+Sub factorial()
+
+Dim value As Integer
+Dim n As Integer
+Dim calculation As String
+Dim result As Integer
+
+Dim storeFactorial As Integer
+    
+    result = 1
+    
+    value = InputBox("Please enter a value ", "Factorial Calculation")
+
+        
+        For n = value To 1 Step -1
+            Debug.Print n
+         
+            calculation = calculation & " * " & n
+            Debug.Print "store = " & calculation
+                        
+            result = result * n                        ' here is the trick... we must store the current status of the variable
+                                                       ' so that it can be passed on as t-1 to the next loop
+            Debug.Print "Factorial = " & result
+            
+        Next
+    
+    
+End Sub
+Sub playString()
+
+
+
+Dim str(1 To 2) As String
+str(1) = "This is a test string"
+str(2) = "Some more test text"
+
+For j = LBound(str) To UBound(str)
+    For i = 1 To Len(str(j))
+        'output strings 1 character at a time in columns A and B
+        Sheet1.Cells(i, j).value = Mid(str(j), i, 1)
+    Next i
+Next j
+
+End Sub
+
+
+Sub stringFlow()
+
+Dim letter As String
+
+    For letter = a To Z
+        Debug.Print letter
+    Next
+        Debug.Print "End of Sub"
+    
+
+
+End Sub
+
+Sub addition(firstNumber As Integer, secondNumber As Integer)
+
+Dim result As Integer
+       
+        result = firstNumber + secondNumber
+
+    MsgBox ("The result of " & firstNumber & " + " & secondNumber & " is " & result)
+    
+End Sub
+
+' This was a sub and has been changed to function, so that we can pass the value on
+' to other subs
+
+Function calculation(firstNumber As Double, secondNumber As Double, operator As String)
+Dim result As Double
+       
+    Select Case operator
+        Case "+"
+            result = firstNumber + secondNumber
+        Case "-"
+            result = firstNumber - secondNumber
+        Case "*"
+            result = firstNumber * secondNumber
+        Case "/"
+            result = firstNumber / secondNumber
+    End Select
+    
+    calculation = result
+        
+End Function
+
+Sub main()                          ' invoking other subs
+Dim myCalculation As Double         ' this variable was created to store the result of
+                                    ' the function(variables)
+
+    myCalculation = calculation(9, 5, "/")            'each line is executed separetely
+    
+    'addition 100, 55
+    
+        
+    MsgBox ("The result of my calculation is " & myCalculation)
     
 End Sub
