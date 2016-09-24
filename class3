@@ -1,0 +1,69 @@
+Option Explicit
+
+'Error treatment
+
+Sub fuelConsumption()
+Dim sumDistance As Single
+Dim sumRefueled As Single
+Dim consumption As Single
+
+    sumDistance = 0#            'this is used to cast the number as single rather than integer
+    sumRefueled = 10#
+    
+    On Error GoTo ErrorHandler
+        
+'    On Error Resume Next        'supressing errors eliminates also the possibility for debuging
+    
+    consumption = sumRefueled / sumDistance * 100
+    
+    'On Error GoTo 0             'this turns the error detection on again
+    
+'    If Err.Number <> 0 Then      'if err.number is 0, it means there are no errors
+'                                 ' add a Watch to Err.Number to check what the error is
+
+
+    Exit Sub
+    
+ErrorHandler:
+    If Err.Number <> 0 Then
+        consumption = 0
+        
+        Resume Next               'it is different to use "Resume", "Resume Next"
+    End If
+        
+    Debug.Print "Comsuption (lts/100km): " & consumption
+     
+End Sub
+
+Sub main()
+
+    fuelConsumption
+    
+End Sub
+
+' critical errors are mostly related to non recovery errors
+' exclamation are more inclined to stupid errors which have little effect
+
+Sub ageCheck()
+Dim age As String
+
+    
+    age = InputBox("Please enter your age")
+    
+        if age
+            Case Is = ""
+                MsgBox "You can do Better !!" & vbCrLf & "You didnt type anything"      'use "" to express a single quotation mark
+        
+            Case IsNumeric(age)
+                MsgBox "You can do Better !!" & vbCrLf & "Be smarter"      'use "" to express a single quotation mark
+        Case Else
+                MsgBox "You said" & vbCrLf & age
+    End If
+    
+    Resume
+    
+    
+    Debug.Print "age: " & age
+    
+
+End Sub
