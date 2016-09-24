@@ -1,6 +1,9 @@
 Option Explicit
 'meant to make all variables explicit through compilation
 Const MIN_AGE = 23
+Dim age As Integer
+Global Const PI = 3.14159
+
 
 
 
@@ -302,4 +305,43 @@ Dim myCalculation As Double         ' this variable was created to store the res
         
     MsgBox ("The result of my calculation is " & myCalculation)
     
+End Sub
+
+' More on passing on variables - Variable Scope
+' local, module and global variables
+' It is necessary to declare the variable under Option Explicit and not under the sub
+' yet, advisable to use variables mostly as local
+
+Sub firstSub()
+Dim value As Integer
+
+    value = 5
+    age = 24
+    Debug.Print "firstSub: " & value
+    
+
+End Sub
+
+
+Sub secondSub()
+Dim value As Integer
+    
+    value = 7
+    age = 65
+    Debug.Print "secondSub: " & value
+  
+
+End Sub
+
+Sub passVariables()
+        
+    age = 12
+    Debug.Print "Age (1): " & age & vbCrLf  ' variable return life feed
+    
+    firstSub
+    Debug.Print "Age (2): " & age & vbCrLf
+    
+    secondSub
+    Debug.Print "Age (2): " & age & vbCrLf
+
 End Sub
