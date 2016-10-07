@@ -1,0 +1,40 @@
+Option Explicit
+
+
+Sub snail()
+'A snail sits in front of a 4.5m high wall.
+'Every day she will climb 50cm upwards and every night she slips back 10% of her height reached so far.
+'How many days will she have to climb to reach the top of the wall.
+
+'For that, I set up the following algo:
+'Variables
+'   - day is defined to start at 0 and count the days that have passed
+'   - pDay takes the last position at night (pNight) and increments by 0.5
+'   - pNight takes the position at the end of the day (pDay) and reduces by 10%
+
+'Since the snail goes up more than it goes down, it should reach the top of the 4.5 wall
+'while going up, so we set the doWhile limit on the pDay variable
+'At the end of the sub it pops up a message with the final position and number of days passed
+
+
+Dim wall As Double
+Dim day As Integer
+Dim pDay As Double
+Dim pNight As Double
+
+
+    wall = 4.5
+    day = 0
+    
+    
+        Do While pDay < 4.5
+            day = day + 1
+            pDay = pNight + 0.5
+            pNight = pDay * 0.9
+        Debug.Print "day = " & day & vbCrLf & "Position Day = " & pDay & vbCrLf & "Position Night = " & pNight
+        Loop
+           
+        MsgBox "day = " & day & vbCrLf & "Position Day = " & pDay
+        
+
+End Sub
