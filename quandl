@@ -1,0 +1,113 @@
+# The objective is to get a few data points from Quandl to replicate the 
+# matrices formulas used in last Fundaments of Finance class
+
+# additionaly, I would like to use it to 
+
+
+# install packages so Quandl functions can be used to retrieve data
+install.packages("Quandl")
+library("Quandl")
+
+
+# In my work, we must define a proxy for the Internet
+library(httr)
+set_config(use_proxy(url='172.25.2.51', port = 80, username = "z1174828",password= "15463254"))
+
+# For someone to download data directly from Quandl, 
+# he must have registered on the website and requested a api_key
+Quandl.api_key("P6QLMV4K3VrkT3jsdCP1")
+
+
+
+# Set database to Swiss Exchange
+database <- "SIX"
+
+# define list of stocks to download
+list_stock_codes <- c(
+
+  ,"US0028241000CHF4"
+  ,"DE000BASF111CHF4"
+  ,"CH0012032048CHF1"
+  ,"US00287Y1091CHF4"
+  ,"CH0038863350CHF1"
+  ,"CH0038459415CHF4"
+  ,"FR0000120644CHF4"
+)
+
+list_stock_names <- c(
+  
+  "ABBOTT"
+  ,"BASF"
+  ,"ROCHE"
+  ,"ABBVIE"
+  ,"NESTLE"
+  ,"NOVARTIS"
+  ,"DANONE"
+)
+
+
+for (i in 1:length(list_stock_codes))
+{
+   print(paste0(list_stock_names[i], " <- Quandl('",database, "/" ,list_stock_codes[i],"')"))
+}
+  
+
+INBEV <- Quandl('SIX/BE0974293251CHF4')
+ABBOTT <- Quandl('SIX/US0028241000CHF4')
+BASF <- Quandl('SIX/DE000BASF111CHF4')
+ROCHE <- Quandl('SIX/CH0012032048CHF1')
+ABBVIE <- Quandl('SIX/US00287Y1091CHF4')
+MERCK <- Quandl('SIX/US58933Y1055EUR4')
+NESTLE <- Quandl('SIX/CH0038863350CHF1')
+NOVARTIS <- Quandl('SIX/CH0038459415CHF4')
+DANONE <- (Quandl('SIX/FR0000120644CHF4'))
+
+
+# to get multiple datasets
+stock_data <- Quandl(c(
+  'SIX/BE0974293251CHF4'
+  ,'SIX/US0028241000CHF4'
+  ,'SIX/DE000BASF111CHF4'
+  ,'SIX/CH0012032048CHF1'
+  ,'SIX/US00287Y1091CHF4'
+  ,'SIX/US58933Y1055EUR4'
+  ,'SIX/CH0038863350CHF1'
+  ,'SIX/CH0038459415CHF4'
+  ,'SIX/FR0000120644CHF4'
+  
+),qopts.columns = c("Price"))
+
+
+
+
+
+
+
+Quandl.search("", database_code="SIX")
+
+
+-- This might be useful for downloading the name of the companies and the tickers
+mydata <- Quandl.datatable("INQ/EE", isin="FI0009000681", qopts.columns="company")
+metaData("DowChemical")
+metaData(Quandl("SIX/FR0000120644CHF4", meta = TRUE, rows=1))
+
+
+
+-- to get multiple datasets
+merged_data <- Quandl(c("FR0000120644CHF4","CH0038459415CHF4","CH0038863350CHF1"))
+
+
+
+Quandl.search("", database_code="SIX", per_page = 1000)
+
+
+-- collects all datacodes from  database (six) and stores in sixt_list
+six_list <- Quandl.search("", database_code= database, per_page = 1000)
+
+six_list$dataset_code
+
+-- We still dont know how to collect the data related to the companies and industries
+six_list
+
+-- in any case, we need to collect the cases where it is data frequency is daily
+ 
