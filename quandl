@@ -25,13 +25,12 @@ database <- "SIX"
 # define list of stocks to download
 list_stock_codes <- c(
 
-  ,"US0028241000CHF4"
+  "US0028241000CHF4"
   ,"DE000BASF111CHF4"
   ,"CH0012032048CHF1"
   ,"US00287Y1091CHF4"
   ,"CH0038863350CHF1"
   ,"CH0038459415CHF4"
-  ,"FR0000120644CHF4"
 )
 
 list_stock_names <- c(
@@ -42,7 +41,6 @@ list_stock_names <- c(
   ,"ABBVIE"
   ,"NESTLE"
   ,"NOVARTIS"
-  ,"DANONE"
 )
 
 
@@ -52,7 +50,6 @@ for (i in 1:length(list_stock_codes))
 }
   
 
-INBEV <- Quandl('SIX/BE0974293251CHF4')
 ABBOTT <- Quandl('SIX/US0028241000CHF4')
 BASF <- Quandl('SIX/DE000BASF111CHF4')
 ROCHE <- Quandl('SIX/CH0012032048CHF1')
@@ -60,10 +57,10 @@ ABBVIE <- Quandl('SIX/US00287Y1091CHF4')
 MERCK <- Quandl('SIX/US58933Y1055EUR4')
 NESTLE <- Quandl('SIX/CH0038863350CHF1')
 NOVARTIS <- Quandl('SIX/CH0038459415CHF4')
-DANONE <- (Quandl('SIX/FR0000120644CHF4'))
 
 
 # to get multiple datasets
+# this procedure did not work !!
 stock_data <- Quandl(c(
   'SIX/BE0974293251CHF4'
   ,'SIX/US0028241000CHF4'
@@ -78,9 +75,45 @@ stock_data <- Quandl(c(
 ),qopts.columns = c("Price"))
 
 
+## Lets try to cbind the data
+six_prices <- cbind(
+  
+  ABBOTT$Price
+  ,BASF$Price
+  ,ROCHE$Price
+  ,ABBVIE$Price
+  ,NESTLE$Price
+  ,NOVARTIS$Price
+)
+
+rownames(six_prices) <- ABBOTT$Date
+colnames(six_prices) <- list_stock_names
+
+
+#
+
+# here I should use one of those "flow" functions from R
+# Still, this is a very elegant way of getting the means
+six_returns <- as.matrix(colMeans(six_prices))
+
+
+#must install MASS package in order to use the inverse function
+install.packages("MASS")
+library("MASS")
+
+# now we get the cov_matrix
+cov_matrix <- cov(six_prices)
+
+# now we get the inv(cov_matrix)
+inv_cov_matrix <- ginv(cov_matrix)
 
 
 
+
+
+
+
+plot(six_prices)
 
 
 Quandl.search("", database_code="SIX")
@@ -110,4 +143,3 @@ six_list$dataset_code
 six_list
 
 -- in any case, we need to collect the cases where it is data frequency is daily
- 
