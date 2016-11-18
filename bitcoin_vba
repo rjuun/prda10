@@ -1,3 +1,4 @@
+
 Option Explicit
 
 Private Declare Function URLDownloadToFile Lib "urlmon" _
@@ -19,26 +20,37 @@ Dim Path As String
         End If
 End Sub
 
-Sub ImportCSV()
-Const strFileName = "C:\Temp\bitcoin.csv"
-Dim wbkS As Workbook
-Dim wshS As Worksheet
-Dim wshT As Worksheet
-Set wshT = Worksheets.Add(After:=Worksheets(Worksheets.Count))
-Set wbkS = Workbooks.Open(Filename:=strFileName, Format:=",")
-Set wshS = wbkS.Worksheets(1)
-ws
-hS.Range("A1:A8").EntireRow.Delete
-wshS.UsedRange.Copy Destination:=wshT.Range("A1")
-wbkS.Close SaveChanges:=False
-End Sub
+
 
 
 Sub OpenData()
 Application.DecimalSeparator = ","
 Const strFileName = "C:\Temp\bitcoin.csv"
-Dim wb As WorkbookSet
+Dim wb As Workbook
 
-wb = Workbooks.Open(strFileName)
+Set wb = Workbooks.Open(Filename:=strFileName, Format:=2)
+    ActiveWorkbook.SaveAs Filename:="C:\Temp\bitcoin", FileFormat:= _
+        xlOpenXMLWorkbookMacroEnabled, CreateBackup:=False
 
+
+
+End Sub
+
+
+Sub ImportWorksheet()
+Dim ControlFile As String
+
+Const strFileName = "C:\Temp\bitcoin.csv"
+    ' This macro will import a file into this workbook
+    
+    Sheets("Sheet1").Select
+    
+    
+    ControlFile = ActiveWorkbook.Name
+    Workbooks.Open Filename:=strFileName
+    ActiveSheet.Name = "bitcoin"
+    Sheets("bitcoin").Copy After:=Workbooks(ControlFile).Sheets(1)
+    Windows(strFileName).Activate
+    ActiveWorkbook.Close SaveChanges:=False
+    Windows(ControlFile).Activate
 End Sub
