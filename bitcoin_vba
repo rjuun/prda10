@@ -6,51 +6,78 @@ Alias "URLDownloadToFileA" (ByVal pCaller As Long, _
 ByVal szURL As String, ByVal szFileName As String, _
 ByVal dwReserved As Long, ByVal lpfnCB As Long) As Long
 Dim Ret As Long
+Const strFileName = "C:\Temp\bitcoin"
+Const dataTable = "data"
 
 Sub Download()
-'QuandlData()
+' QuandlData()
+' strFileName is already set as a constant
+
 Dim URL As String
-Dim Path As String
+
     URL = "https://www.quandl.com/api/v3/datasets/BITCOIN/BTCEUSD.csv?api_key=P6QLMV4K3VrkT3jsdCP1"
-    Path = "C:\Temp\bitcoin.csv"
-    Ret = URLDownloadToFile(0, URL, Path, 0, 0)
+    
+    Ret = URLDownloadToFile(0, URL, strFileName, 0, 0)
+    
         If Ret = 0 Then
             MsgBox "File successfully downloaded"
-        Else: MsgBox "Unable to download the file"
+            Else: MsgBox "Unable to download the file"
         End If
+        
 End Sub
 
-
-
-
 Sub OpenData()
-Application.DecimalSeparator = ","
-Const strFileName = "C:\Temp\bitcoin.csv"
-Dim wb As Workbook
 
-Set wb = Workbooks.Open(Filename:=strFileName, Format:=2)
-    ActiveWorkbook.SaveAs Filename:="C:\Temp\bitcoin", FileFormat:= _
+
+' remember that strFileName is set as a constant
+
+Workbooks.OpenText Filename:=strFileName, DataType:=xlDelimited, Comma:=False
+'_ DecimalSeparator:="." ', ThousandsSeparator:="." ', Local:=False
+ActiveWorkbook.SaveAs Filename:=strFileName, FileFormat:= _
         xlOpenXMLWorkbookMacroEnabled, CreateBackup:=False
 
 
 
 End Sub
+   
 
+Sub SetRange()
+ ' dataTable is already announced as a constant
 
-Sub ImportWorksheet()
-Dim ControlFile As String
+     
+Range("A1").Select
+Range(Selection, Selection.End(xlToRight)).Select
+Range(Selection, Selection.End(xlDown)).Select
 
-Const strFileName = "C:\Temp\bitcoin.csv"
-    ' This macro will import a file into this workbook
+ActiveSheet.ListObjects.Add(xlSrcRange, , , xlYes).Name = _
+        dataTable
+        
+    Range(dataTable & "[#All]").Select
     
-    Sheets("Sheet1").Select
-    
-    
-    ControlFile = ActiveWorkbook.Name
-    Workbooks.Open Filename:=strFileName
-    ActiveSheet.Name = "bitcoin"
-    Sheets("bitcoin").Copy After:=Workbooks(ControlFile).Sheets(1)
-    Windows(strFileName).Activate
-    ActiveWorkbook.Close SaveChanges:=False
-    Windows(ControlFile).Activate
+    ActiveSheet.ListObjects(dataTable).TableStyle = "TableStyleMedium6"
+ 
 End Sub
+
+Sub sortDate()
+Dim sortField As String
+
+sortField = "Date"
+
+    Range(dataTable).Sort _
+        Key1:=Range(dataTable & "[" & sortField & "]"), Header:=xlYes
+
+
+End Sub
+
+Sub nSize()
+
+' here we need to define the number of observations to the latest 365
+' so we count total number of lines and subtract by 365
+
+
+End Sub
+
+
+
+
+
