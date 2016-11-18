@@ -9,6 +9,20 @@ Dim Ret As Long
 Const strFileName = "C:\Temp\bitcoin"
 Const dataTable = "data"
 
+Sub MovingAverage()
+' Simply to define the Workflow for the whole process
+
+    Download
+    OpenData
+    SetRange
+    SortDate
+    SampleData
+
+
+End Sub
+
+
+
 Sub Download()
 ' QuandlData()
 ' strFileName is already set as a constant
@@ -31,8 +45,9 @@ Sub OpenData()
 
 ' remember that strFileName is set as a constant
 
-Workbooks.OpenText Filename:=strFileName, DataType:=xlDelimited, Comma:=False
-'_ DecimalSeparator:="." ', ThousandsSeparator:="." ', Local:=False
+
+Workbooks.OpenText Filename:=strFileName, DataType:=xlDelimited, Comma:=True _
+ , DecimalSeparator:=".", ThousandsSeparator:=","  ', Local:=False
 ActiveWorkbook.SaveAs Filename:=strFileName, FileFormat:= _
         xlOpenXMLWorkbookMacroEnabled, CreateBackup:=False
 
@@ -58,7 +73,7 @@ ActiveSheet.ListObjects.Add(xlSrcRange, , , xlYes).Name = _
  
 End Sub
 
-Sub sortDate()
+Sub SortDate()
 Dim sortField As String
 
 sortField = "Date"
@@ -69,15 +84,19 @@ sortField = "Date"
 
 End Sub
 
-Sub nSize()
+Sub SampleData()
 
 ' here we need to define the number of observations to the latest 365
 ' so we count total number of lines and subtract by 365
 
+'If the data is in column A
+Dim lngCount As Long
+
+lngCount = Application.WorksheetFunction.CountA(Columns(1))
+lngCount = lngCount - 365
+
+    Rows("2:" & lngCount).Select
+    Selection.Delete Shift:=xlUp
+
 
 End Sub
-
-
-
-
-
