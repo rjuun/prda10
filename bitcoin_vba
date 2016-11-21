@@ -17,6 +17,8 @@ Sub MovingAverage()
     SetRange
     SortDate
     SampleData
+    MovAverage
+    'Graphic
 
 
 End Sub
@@ -85,6 +87,9 @@ sortField = "Date"
 End Sub
 
 Sub SampleData()
+Dim tbl As ListObject
+
+Set tbl = ActiveSheet.ListObjects(dataTable)
 
 ' here we need to define the number of observations to the latest 365
 ' so we count total number of lines and subtract by 365
@@ -92,11 +97,111 @@ Sub SampleData()
 'If the data is in column A
 Dim lngCount As Long
 
-lngCount = Application.WorksheetFunction.CountA(Columns(1))
-lngCount = lngCount - 365
+    lngCount = Application.WorksheetFunction.CountA(Columns(1))
+    lngCount = lngCount - 365
 
-    Rows("2:" & lngCount).Select
-    Selection.Delete Shift:=xlUp
+
+    tbl.Range.Rows("2:" & lngCount).Delete
+
+
+
+End Sub
+
+Sub MovAverage()
+Dim windowSize As Integer
+Dim lngCount As Long
+
+    lngCount = Application.WorksheetFunction.CountA(Columns(1))
+    windowSize = 21
+
+
+'Adds the necessary columns for calculating Moving Average and Relative Strength Index
+
+    With ActiveSheet.ListObjects(dataTable)
+           .ListColumns.Add.Name = "Mov_Average"
+           .ListColumns.Add.Name = "Ticks"
+           .ListColumns.Add.Name = "avg_tickup"
+           .ListColumns.Add.Name = "avg_tickdown"
+           .ListColumns.Add.Name = "RSI"
+
+'Moves into the defined number
+'Eventually we could add here a box for the user to select desired number of obs
+
+
+            .DataBodyRange(windowSize, 9).FormulaR1C1 = "=AVERAGE(R[-20]C[-4]:RC[-4])"
+            .DataBodyRange(windowSize, 9).AutoFill Destination:=Range("I" & windowSize + 1 & ":I" & lngCount)
+            
+            .DataBodyRange(windowSize - 19, 10).FormulaR1C1 = "=[@Close]-R[-1]C[-5]"
+            '.DataBodyRange(windowSize - 19, 10).AutoFill Destination:=Range("J" & windowSize + 1 & ":J" & lngCount)
+            
+            .DataBodyRange(windowSize, 11).FormulaR1C1 = "=+AVERAGEIF(R[-20]C[-1]:RC[-1],"">0"")"
+            .DataBodyRange(windowSize, 11).AutoFill Destination:=Range("K" & windowSize + 1 & ":K" & lngCount)
+            
+            .DataBodyRange(windowSize, 12).FormulaR1C1 = "=-AVERAGEIF(R[-20]C[-2]:RC[-2],""<0"")"
+            .DataBodyRange(windowSize, 12).AutoFill Destination:=Range("L" & windowSize + 1 & ":L" & lngCount)
+                        
+            .DataBodyRange(windowSize, 13).FormulaR1C1 = "=+[@[avg_tickup]]/SUM(data[@[avg_tickup]:[avg_tickdown]])"
+            
+
+    End With
+
+End Sub
+
+
+Sub Graphic()
+
+ActiveSheet.Shapes.AddChart.Select
+ActiveChart.ChartType = xlLineMarkers
+
+ActiveChart.SeriesCollection(2).XValues = "=bitcoin!$A$1"
+
+ActiveChart.SetSourceData Source:=Range( _
+        "bitcoin!$A$1:$A$366;bitcoin!$E$1;bitcoin!$E$2:$E$366;bitcoin!$I$2:$I$366;bitcoin!$M$2:$M$366" _
+        )
+
+    ActiveChart.SeriesCollection(1).Name = "=bitcoin!$E$1"
+    ActiveChart.SeriesCollection(2).Name = "=bitcoin!$I$1"
+    ActiveChart.SeriesCollection(3).Name = "=bitcoin!$M$1"
+
+
+End Sub
+
+Sub shit()
+
+
+    Range("data[[#Headers],[Date]]").Select
+    Range(Selection, Selection.End(xlDown)).Select
+    ActiveWindow.SmallScroll Down:=-327
+    Range("A1:A366,E1,E2:E366,I2:I366,M2:M366").Select
+    Range("M2").Activate
+    ActiveSheet.Shapes.AddChart.Select
+    ActiveChart.ChartType = xlLineMarkers
+    ActiveChart.SetSourceData Source:=Range( _
+        "bitcoin!$A$1:$A$366;bitcoin!$E$1;bitcoin!$E$2:$E$366;bitcoin!$I$2:$I$366;bitcoin!$M$2:$M$366" _
+        )
+    ActiveSheet.Shapes("Chart 2").ScaleWidth 1.5863094926, msoFalse, _
+        msoScaleFromTopLeft
+    ActiveSheet.Shapes("Chart 2").ScaleHeight 1.3308533829, msoFalse, _
+        msoScaleFromTopLeft
+    ActiveChart.SeriesCollection(1).Delete
+    
+    
+    ActiveChart.SeriesCollection(2).XValues = "=bitcoin!$A$2:$A$366"
+    ActiveChart.SeriesCollection(1).Name = "=bitcoin!$E$1"
+    ActiveChart.SeriesCollection(2).Name = "=bitcoin!$I$1"
+    ActiveChart.SeriesCollection(3).Name = "=bitcoin!$M$1"
+    ActiveChart.SeriesCollection(3).Select
+    ActiveChart.ChartArea.Select
+    ActiveSheet.Shapes("Chart 2").IncrementLeft -27.8571653543
+    ActiveSheet.Shapes("Chart 2").IncrementTop -16.0714173228
+    ActiveChart.SeriesCollection(3).Select
+    ActiveChart.SeriesCollection(3).AxisGroup = 2
+    ActiveSheet.ChartObjects("Chart 2").Activate
+    ActiveChart.SeriesCollection(3).Select
+    ActiveChart.ChartArea.Select
+    ActiveSheet.Shapes("Chart 2").ScaleHeight 1.5318666034, msoFalse, _
+        msoScaleFromBottomRight
+
 
 
 End Sub
