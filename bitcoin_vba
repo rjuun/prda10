@@ -1,4 +1,3 @@
-
 Option Explicit
 
 Private Declare Function URLDownloadToFile Lib "urlmon" _
@@ -12,7 +11,7 @@ Const dataTable = "data"
 Sub MovingAverage()
 ' Simply to define the Workflow for the whole process
 
-    Download
+    QuandlData
     OpenData
     SetRange
     SortDate
@@ -20,13 +19,10 @@ Sub MovingAverage()
     MovAverage
     Graphic
 
-
 End Sub
 
 
-
-Sub Download()
-' QuandlData()
+Sub QuandlData()
 ' strFileName is already set as a constant
 
 Dim URL As String
@@ -42,17 +38,18 @@ Dim URL As String
         
 End Sub
 
+
 Sub OpenData()
-
-
 ' remember that strFileName is set as a constant
 
-
-Workbooks.OpenText Filename:=strFileName, DataType:=xlDelimited, Comma:=True _
- , DecimalSeparator:=".", ThousandsSeparator:=","  ', Local:=False
-ActiveWorkbook.SaveAs Filename:=strFileName, FileFormat:= _
+    ' here I struggled a bit with number formats, as to make sure I could play with "numbers"
+    Workbooks.OpenText Filename:=strFileName, DataType:=xlDelimited, Comma:=True _
+    , DecimalSeparator:=".", ThousandsSeparator:=","  ', Local:=False
+    
+    ' since we open a csv file, we must immediately save it as xlsx macro enabled
+    ' as to be able to continue with the code
+    ActiveWorkbook.SaveAs Filename:=strFileName, FileFormat:= _
         xlOpenXMLWorkbookMacroEnabled, CreateBackup:=False
-
 
 
 End Sub
@@ -62,11 +59,11 @@ Sub SetRange()
  ' dataTable is already announced as a constant
 
      
-Range("A1").Select
-Range(Selection, Selection.End(xlToRight)).Select
-Range(Selection, Selection.End(xlDown)).Select
+    Range("A1").Select
+    Range(Selection, Selection.End(xlToRight)).Select
+    Range(Selection, Selection.End(xlDown)).Select
 
-ActiveSheet.ListObjects.Add(xlSrcRange, , , xlYes).Name = _
+    ActiveSheet.ListObjects.Add(xlSrcRange, , , xlYes).Name = _
         dataTable
         
     Range(dataTable & "[#All]").Select
@@ -74,6 +71,7 @@ ActiveSheet.ListObjects.Add(xlSrcRange, , , xlYes).Name = _
     ActiveSheet.ListObjects(dataTable).TableStyle = "TableStyleMedium6"
  
 End Sub
+
 
 Sub SortDate()
 Dim sortField As String
@@ -85,6 +83,7 @@ sortField = "Date"
 
 
 End Sub
+
 
 Sub SampleData()
 Dim dataTableObj As ListObject
@@ -106,6 +105,7 @@ Dim lngCount As Long
 
 
 End Sub
+
 
 Sub MovAverage()
 Dim windowSize As Integer
@@ -236,8 +236,7 @@ Dim bitChart As Object
             
             .Location Where:=xlLocationAsNewSheet, Name:="Bitcoin_Analysis"
             
-            
-            
+     
         
     End With
 
