@@ -18,7 +18,7 @@ Sub MovingAverage()
     SortDate
     SampleData
     MovAverage
-    'Graphic
+    Graphic
 
 
 End Sub
@@ -87,9 +87,9 @@ sortField = "Date"
 End Sub
 
 Sub SampleData()
-Dim tbl As ListObject
+Dim dataTableObj As ListObject
 
-Set tbl = ActiveSheet.ListObjects(dataTable)
+Set dataTableObj = ActiveSheet.ListObjects(dataTable)
 
 ' here we need to define the number of observations to the latest 365
 ' so we count total number of lines and subtract by 365
@@ -101,7 +101,7 @@ Dim lngCount As Long
     lngCount = lngCount - 365
 
 
-    tbl.Range.Rows("2:" & lngCount).Delete
+    dataTableObj.Range.Rows("2:" & lngCount).Delete
 
 
 
@@ -149,59 +149,99 @@ End Sub
 
 
 Sub Graphic()
-
-ActiveSheet.Shapes.AddChart.Select
-ActiveChart.ChartType = xlLineMarkers
-
-ActiveChart.SeriesCollection(2).XValues = "=bitcoin!$A$1"
-
-ActiveChart.SetSourceData Source:=Range( _
-        "bitcoin!$A$1:$A$366;bitcoin!$E$1;bitcoin!$E$2:$E$366;bitcoin!$I$2:$I$366;bitcoin!$M$2:$M$366" _
-        )
-
-    ActiveChart.SeriesCollection(1).Name = "=bitcoin!$E$1"
-    ActiveChart.SeriesCollection(2).Name = "=bitcoin!$I$1"
-    ActiveChart.SeriesCollection(3).Name = "=bitcoin!$M$1"
+Dim graphDate As Range
+Dim graphClose As Range
+Dim graphMovAverage As Range
+Dim graphRSI As Range
+Dim graphRange As Range
+Dim bitChart As Object
 
 
-End Sub
+'define the data to pass into the graph
+    Set graphDate = Range(dataTable & "[[Date]]")
+    Set graphClose = Range(dataTable & "[[Close]]")
+    Set graphMovAverage = Range(dataTable & "[[Mov_Average]]")
+    Set graphRSI = Range(dataTable & "[[RSI]]")
 
-Sub shit()
+    Set graphRange = Union(graphDate, graphClose, graphMovAverage, graphRSI)
 
-
-    Range("data[[#Headers],[Date]]").Select
-    Range(Selection, Selection.End(xlDown)).Select
-    ActiveWindow.SmallScroll Down:=-327
-    Range("A1:A366,E1,E2:E366,I2:I366,M2:M366").Select
-    Range("M2").Activate
-    ActiveSheet.Shapes.AddChart.Select
-    ActiveChart.ChartType = xlLineMarkers
-    ActiveChart.SetSourceData Source:=Range( _
-        "bitcoin!$A$1:$A$366;bitcoin!$E$1;bitcoin!$E$2:$E$366;bitcoin!$I$2:$I$366;bitcoin!$M$2:$M$366" _
-        )
-    ActiveSheet.Shapes("Chart 2").ScaleWidth 1.5863094926, msoFalse, _
-        msoScaleFromTopLeft
-    ActiveSheet.Shapes("Chart 2").ScaleHeight 1.3308533829, msoFalse, _
-        msoScaleFromTopLeft
-    ActiveChart.SeriesCollection(1).Delete
     
+' create the graph with an specific object name
+    Set bitChart = ActiveSheet.ChartObjects.Add( _
+    Left:=ActiveCell.Left, _
+    Width:=450, _
+    Top:=ActiveCell.Top, _
+    Height:=250)
+
+
+    With bitChart.Chart
+
+' pass on the data into the graph
+        .SetSourceData Source:=graphRange
+
+' define the graph types and formats
+        '.ChartType = xlLineMarkers
+        
+        .SeriesCollection(1).ChartType = xlLineMarkers
+        .SeriesCollection(1).Format.Line.Visible = msoFalse
+        .SeriesCollection(3).MarkerStyle = 1
+        .SeriesCollection(1).MarkerSize = 2
+        
+        .SeriesCollection(2).ChartType = xlLine
+        .SeriesCollection(2).Format.Line.Weight = 1.25
+        
+        .SeriesCollection(3).ChartType = xlLineMarkers
+        .SeriesCollection(3).MarkerStyle = 8
+        .SeriesCollection(3).MarkerSize = 2
+        .SeriesCollection(3).Format.Line.Weight = 1
+        
+
+' send RSI collection to axis 2 and format axis
+        .SeriesCollection(3).AxisGroup = 2
+        .Axes(xlValue, xlSecondary).MaximumScale = 2
+        
+        'Vertical Axes
+        .SetElement (msoElementPrimaryValueAxisTitleRotated)
+        .Axes(xlValue, xlPrimary).AxisTitle.Text = "Close Price and Moving Average"
+        .Axes(xlValue).TickLabels.NumberFormat = "#.##0"
+        .Axes(xlValue).TickLabels.Font.Size = 8
+        
+        
+        .SetElement (msoElementSecondaryValueAxisTitleRotated)
+        .Axes(xlValue, xlSecondary).AxisTitle.Text = "RSI"
+        .Axes(xlValue, xlSecondary).TickLabels.NumberFormat = "0%"
+        .Axes(xlValue, xlSecondary).TickLabels.Font.Size = 8
+        
+        'Horizontal Axis
+        .Axes(xlCategory).TickLabels.Orientation = xlUpward
+        .Axes(xlCategory).TickLabels.Font.Size = 8
+        
+        'Horizontal Lines
+        .Axes(xlValue).MajorGridlines.Format.Line.Transparency = 0.9
+        .Axes(xlValue).MajorGridlines.Format.Line.DashStyle = msoLineSysDash
+        
+        
+' give names for all series and place it at the bottom
+        .SeriesCollection(1).Name = Range(dataTable & "[[#Headers],[Close]]")
+        .SeriesCollection(2).Name = Range(dataTable & "[[#Headers],[Mov_Average]]")
+        .SeriesCollection(3).Name = Range(dataTable & "[[#Headers],[RSI]]")
+        
+        .Legend.Position = xlBottom
+        
+
+' set the Chart title and place the graph object in a new sheet with its proper name
+         
+            .SetElement (msoElementChartTitleAboveChart)
+            .ChartTitle.Text = "Bitcoin Price Analysis"
+            
+            .Location Where:=xlLocationAsNewSheet, Name:="Bitcoin_Analysis"
+            
+            
+            
+        
+    End With
+
     
-    ActiveChart.SeriesCollection(2).XValues = "=bitcoin!$A$2:$A$366"
-    ActiveChart.SeriesCollection(1).Name = "=bitcoin!$E$1"
-    ActiveChart.SeriesCollection(2).Name = "=bitcoin!$I$1"
-    ActiveChart.SeriesCollection(3).Name = "=bitcoin!$M$1"
-    ActiveChart.SeriesCollection(3).Select
-    ActiveChart.ChartArea.Select
-    ActiveSheet.Shapes("Chart 2").IncrementLeft -27.8571653543
-    ActiveSheet.Shapes("Chart 2").IncrementTop -16.0714173228
-    ActiveChart.SeriesCollection(3).Select
-    ActiveChart.SeriesCollection(3).AxisGroup = 2
-    ActiveSheet.ChartObjects("Chart 2").Activate
-    ActiveChart.SeriesCollection(3).Select
-    ActiveChart.ChartArea.Select
-    ActiveSheet.Shapes("Chart 2").ScaleHeight 1.5318666034, msoFalse, _
-        msoScaleFromBottomRight
-
-
+    ActiveWorkbook.Save
 
 End Sub
