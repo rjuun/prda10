@@ -1,0 +1,54 @@
+setwd("C:/Users/z1174828/Desktop/Pers Desktop/ficd/assignment2")
+
+ratings <- read.csv("ratinghists.csv", stringsAsFactors=FALSE )
+
+
+
+
+# 
+
+i <- 1 # row company (1 to 200)
+j <- 3 # year observation (2 to 25)
+
+rating_hist <- c(seq(1,24))
+change_hist <- c(seq(1,24))
+
+
+
+for (i in c(seq(from = 1, to = 2))) {
+  
+
+  
+  for (j in   c(seq(from = 2, to = 24))) {
+    rating_change <- paste0(ratings[i, j],  ratings[i, (j + 1)], collapse = "")
+    rating_hist <- cbind(rating_hist, rating_change)
+  }
+
+  change_hist <- rbind(change_hist, rating_hist)
+  rating_hist <- c(seq(1,24))  
+}
+
+#havent tried this 
+do.call(rbind, replicate(100000, x, simplify=FALSE))
+  
+inv_ratings <- t(ratings[,2:length(ratings)])
+
+
+diff(inv_ratings, lag=1)
+
+#Failed
+########################
+
+
+library(xlsx)
+ratings_changes <- read.xlsx("ratinghists.xlsx", "ratings_changes", stringsAsFactors=FALSE )
+
+rfrom <- LETTERS[1:4]
+rto <- LETTERS[1:4]
+
+
+changes <- as.datastructure(c("AA", "AB", "AS", "AC","BA", "BB", "BS", "BC","CA", "CB", "CS", "CC","DA", "DB", "DS", "DC"), .Dim = c(4L,4L))
+
+changes <- names(rfrom)
+
+
